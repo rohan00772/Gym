@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GYM PRO ELITE</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #FF4D00;
+  --accent2: #FF8C00;
+  --gold: #FFD700;
+  --bg: #0A0A0F;
+  --bg2: #13131A;
+  --bg3: #1C1C28;
+  --card: rgba(255,255,255,0.04);
+  --glass: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.08);
+  --text: #F0F0F5;
+  --text2: #8888A8;
+  --text3: #555570;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  --glow: 0 0 30px rgba(255,77,0,0.3);
+}
+[data-theme="light"] {
+  --bg: #F0F0F7;
+  --bg2: #E4E4EF;
+  --bg3: #D8D8E8;
+  --card: rgba(255,255,255,0.7);
+  --glass: rgba(255,255,255,0.8);
+  --border: rgba(0,0,0,0.08);
+  --text: #1A1A2E;
+  --text2: #555570;
+  --text3: #9999AA;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
+#app{width:100%;max-width:430px;margin:0 auto;height:100vh;position:relative;overflow:hidden;background:var(--bg);}
+
+/* SCROLLABLE PAGES */
+.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;transition:var(--transition);}
+.page.active{display:flex;}
+.page-content{padding-bottom:80px;}
+
+/* LOADING */
+#loadingScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;}
+.loader-logo{display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeInUp 0.8s ease;}
+.logo-icon{width:90px;height:90px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:var(--glow);animation:pulse 2s infinite;}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sub{font-size:12px;letter-spacing:6px;color:var(--text2);text-transform:uppercase;}
+.loader-bar{width:200px;height:3px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;animation:load 2s ease forwards;}
+@keyframes load{from{width:0}to{width:100%}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes glow{0%,100%{box-shadow:var(--glow)}50%{box-shadow:0 0 50px rgba(255,77,0,0.5)}}
+@keyframes countUp{from{transform:scale(0.8)}to{transform:scale(1)}}
+
+/* AUTH */
+#authPage{background:var(--bg);min-height:100vh;}
+.auth-bg{position:relative;height:260px;overflow:hidden;}
+.auth-bg img{width:100%;height:100%;object-fit:cover;opacity:0.4;}
+.auth-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent,var(--bg));}
+.auth-logo-overlay{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);text-align:center;z-index:2;}
+.auth-logo-overlay .logo-icon{width:64px;height:64px;font-size:28px;margin:0 auto 8px;}
+.auth-logo-overlay .logo-text{font-size:28px;}
+.auth-tabs{display:flex;margin:0 20px 24px;background:var(--bg3);border-radius:var(--radius-sm);padding:4px;}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;transition:var(--transition);color:var(--text2);}
+.auth-tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:var(--glow);}
+.auth-form{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px;}
+.input-group{position:relative;}
+.input-group i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:16px;}
+.input-group input{width:100%;padding:14px 14px 14px 44px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;font-family:'Outfit',sans-serif;outline:none;transition:var(--transition);}
+.input-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,77,0,0.1);}
+.input-group input::placeholder{color:var(--text3);}
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius-sm);color:#fff;font-size:16px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--transition);box-shadow:var(--glow);letter-spacing:1px;}
+.btn-primary:active{transform:scale(0.97);}
+.auth-divider{text-align:center;color:var(--text3);font-size:13px;position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border);}
+.auth-divider::before{left:0}
+.auth-divider::after{right:0}
+
+/* TOP BAR */
+.top-bar{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;background:linear-gradient(to bottom,var(--bg) 80%,transparent);backdrop-filter:blur(10px);}
+.top-bar-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.top-bar-actions{display:flex;gap:10px;align-items:center;}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);color:var(--text);font-size:16px;}
+.icon-btn:active{transform:scale(0.93);}
+
+/* DROPDOWN MENU */
+.dropdown-menu{position:absolute;top:66px;right:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px;z-index:999;min-width:180px;box-shadow:var(--shadow);display:none;}
+.dropdown-menu.open{display:block;animation:fadeInUp 0.2s ease;}
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);color:var(--text);font-size:14px;font-weight:500;}
+.menu-item:hover{background:var(--glass);}
+.menu-item i{width:18px;color:var(--accent);font-size:15px;}
+.menu-item.danger{color:#FF4D4D;}
+.menu-item.danger i{color:#FF4D4D;}
+.menu-divider{height:1px;background:var(--border);margin:4px 0;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:200;padding:4px 0 env(safe-area-inset-bottom);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;cursor:pointer;transition:var(--transition);color:var(--text2);font-size:10px;font-weight:600;letter-spacing:0.5px;}
+.nav-item i{font-size:20px;transition:var(--transition);}
+.nav-item.active{color:var(--accent);}
+.nav-item.active i{transform:scale(1.1);}
+.nav-item.scan-btn{position:relative;}
+.nav-item .scan-center{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:var(--glow);font-size:22px;color:#fff;}
+
+/* HOME PAGE */
+.hero-banner{margin:0 20px 20px;border-radius:var(--radius);overflow:hidden;position:relative;height:200px;}
+.hero-banner img{width:100%;height:100%;object-fit:cover;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.7) 0%,rgba(255,77,0,0.3) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;line-height:1;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.7);margin-top:4px;}
+.hero-badge{position:absolute;top:16px;right:16px;background:linear-gradient(135deg,var(--gold),#FFA500);color:#000;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:1px;}
+
+.section-title{font-size:16px;font-weight:700;padding:0 20px 12px;letter-spacing:0.5px;}
+.section-title span{color:var(--accent);}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 20px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;transition:var(--transition);}
+.stat-card::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;opacity:0.1;}
+.stat-card.orange::before{background:var(--accent);}
+.stat-card.blue::before{background:#4D9FFF;}
+.stat-card.green::before{background:#4DFF9F;}
+.stat-card.purple::before{background:#9F4DFF;}
+.stat-icon{font-size:22px;margin-bottom:8px;}
+.stat-card.orange .stat-icon{color:var(--accent);}
+.stat-card.blue .stat-icon{color:#4D9FFF;}
+.stat-card.green .stat-icon{color:#4DFF9F;}
+.stat-card.purple .stat-icon{color:#9F4DFF;}
+.stat-value{font-size:26px;font-weight:800;line-height:1;}
+.stat-label{font-size:11px;color:var(--text2);margin-top:4px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;}
+.stat-change{font-size:11px;color:#4DFF9F;font-weight:600;margin-top:6px;}
+
+/* WATER TRACKER */
+.water-tracker{margin:0 20px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.water-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.water-title{display:flex;align-items:center;gap:8px;font-weight:600;}
+.water-title i{color:#4D9FFF;}
+.water-amount{font-size:13px;color:var(--text2);}
+.water-bubbles{display:flex;gap:8px;flex-wrap:wrap;}
+.water-bubble{width:36px;height:36px;border-radius:50%;border:2px solid rgba(77,159,255,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);font-size:16px;}
+.water-bubble.filled{background:linear-gradient(135deg,#4D9FFF,#0055FF);border-color:#4D9FFF;box-shadow:0 0 12px rgba(77,159,255,0.4);}
+.water-bubble:active{transform:scale(0.9);}
+
+/* QUOTE */
+.quote-card{margin:0 20px 20px;background:linear-gradient(135deg,rgba(255,77,0,0.15),rgba(255,140,0,0.1));border:1px solid rgba(255,77,0,0.2);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
+.quote-card::before{content:'\201C';position:absolute;top:-10px;left:10px;font-size:80px;color:rgba(255,77,0,0.15);font-family:serif;line-height:1;}
+.quote-text{font-size:14px;line-height:1.6;font-weight:500;font-style:italic;}
+.quote-author{font-size:12px;color:var(--accent);font-weight:700;margin-top:8px;letter-spacing:1px;}
+
+/* STREAK */
+.streak-bar{margin:0 20px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:16px;}
+.streak-fire{font-size:36px;animation:bounce 2s infinite;}
+.streak-info{flex:1;}
+.streak-num{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.streak-label{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+.streak-days{display:flex;gap:4px;margin-top:8px;}
+.streak-day{width:28px;height:6px;border-radius:99px;background:var(--bg3);}
+.streak-day.done{background:linear-gradient(90deg,var(--accent),var(--accent2));}
+
+/* WORKOUT MODES */
+.mode-scroll{padding:0 20px 20px;display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;}
+.mode-scroll::-webkit-scrollbar{display:none;}
+.mode-card{min-width:160px;border-radius:var(--radius);overflow:hidden;position:relative;cursor:pointer;flex-shrink:0;transition:var(--transition);}
+.mode-card:active{transform:scale(0.97);}
+.mode-card img{width:100%;height:200px;object-fit:cover;}
+.mode-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}
+.mode-name{font-weight:700;font-size:14px;line-height:1.2;}
+.mode-tag{font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:8px;}
+.mode-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:6px 14px;border-radius:99px;font-size:11px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;letter-spacing:0.5px;}
+
+/* WORKOUT PAGE */
+.workout-hero{margin:0 20px 20px;background:linear-gradient(135deg,var(--accent),#8B0000);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden;}
+.workout-hero::after{content:'💪';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:60px;opacity:0.3;}
+.workout-day{font-size:12px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:2px;}
+.workout-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;margin:4px 0;}
+.workout-meta{display:flex;gap:16px;margin-top:12px;}
+.workout-meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,0.8);}
+.start-btn{margin:0 20px 20px;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--radius-sm);color:#fff;font-size:16px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:var(--glow);letter-spacing:1px;transition:var(--transition);}
+.start-btn:active{transform:scale(0.97);}
+
+.exercise-list{padding:0 20px 20px;display:flex;flex-direction:column;gap:12px;}
+.exercise-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;transition:var(--transition);}
+.exercise-card:active{transform:scale(0.98);}
+.ex-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ex-info{flex:1;}
+.ex-name{font-weight:700;font-size:15px;}
+.ex-meta{font-size:12px;color:var(--text2);margin-top:2px;}
+.ex-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);}
+.ex-check.done{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* TIMER */
+.timer-modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);}
+.timer-modal.open{display:flex;}
+.timer-box{background:var(--bg2);border-radius:30px;padding:40px;text-align:center;width:300px;border:1px solid var(--border);}
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:80px;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.timer-controls{display:flex;gap:12px;justify-content:center;margin-top:24px;}
+.timer-btn{padding:12px 24px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--transition);}
+.timer-btn.start{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.timer-btn.stop{background:var(--bg3);color:var(--text);}
+.timer-btn.close-t{background:var(--bg3);color:var(--text);}
+
+/* AI FOOD SCANNER */
+.scanner-area{margin:0 20px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.camera-view{width:100%;height:260px;background:var(--bg3);position:relative;display:flex;align-items:center;justify-content:center;}
+.camera-view video{width:100%;height:100%;object-fit:cover;display:none;}
+.camera-view canvas{display:none;}
+.camera-placeholder{text-align:center;color:var(--text3);}
+.camera-placeholder i{font-size:48px;margin-bottom:12px;display:block;}
+.scan-overlay{position:absolute;inset:0;pointer-events:none;}
+.scan-frame{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:30px;height:30px;border-color:var(--accent);border-style:solid;}
+.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;}
+.scan-frame::after{bottom:0;right:0;border-width:0 3px 3px 0;}
+.scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan 2s linear infinite;}
+@keyframes scan{0%{top:0}100%{top:100%}}
+.scanner-btns{display:flex;gap:10px;padding:16px;}
+.scanner-btn{flex:1;padding:13px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;}
+.scanner-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.scanner-btn.secondary{background:var(--bg3);color:var(--text);}
+
+.food-result{margin:0 20px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:none;}
+.food-result.show{display:block;animation:slideUp 0.4s ease;}
+.food-name{font-size:20px;font-weight:800;margin-bottom:4px;}
+.food-sub{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.nutrition-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.nutrition-item{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;}
+.nutrition-val{font-size:18px;font-weight:800;color:var(--accent);}
+.nutrition-key{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.food-tip{background:rgba(77,255,159,0.1);border:1px solid rgba(77,255,159,0.2);border-radius:var(--radius-sm);padding:12px;display:flex;gap:10px;align-items:flex-start;}
+.food-tip i{color:#4DFF9F;margin-top:2px;}
+.food-tip-text{font-size:13px;line-height:1.5;}
+
+/* AI LOADING */
+.ai-loading{text-align:center;padding:30px 20px;display:none;}
+.ai-loading.show{display:block;}
+.ai-spinner{width:60px;height:60px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin 1s linear infinite;margin:0 auto 16px;}
+.ai-text{font-size:15px;font-weight:600;color:var(--text2);}
+
+/* PROFILE */
+.profile-header{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:30px 20px 20px;text-align:center;position:relative;}
+.profile-avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:36px;box-shadow:var(--glow);position:relative;cursor:pointer;}
+.profile-avatar .edit-badge{position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--bg2);}
+.profile-name{font-size:22px;font-weight:800;}
+.profile-since{font-size:13px;color:var(--text2);margin-top:4px;}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:20px;border-radius:var(--radius);}
+.profile-stat{background:var(--bg2);padding:14px 8px;text-align:center;}
+.profile-stat:first-child{border-radius:var(--radius) 0 0 var(--radius);}
+.profile-stat:last-child{border-radius:0 var(--radius) var(--radius) 0;}
+.ps-val{font-size:20px;font-weight:800;color:var(--accent);}
+.ps-key{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.badges-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 20px 20px;}
+.badge-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;transition:var(--transition);}
+.badge-item:active{transform:scale(0.95);}
+.badge-emoji{font-size:28px;}
+.badge-name{font-size:9px;color:var(--text2);margin-top:6px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;}
+.badge-item.earned{border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);}
+
+/* BMI MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:400;display:none;align-items:flex-end;backdrop-filter:blur(8px);}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:var(--bg2);border-radius:30px 30px 0 0;padding:28px 20px 40px;width:100%;animation:slideUp 0.3s ease;}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 24px;}
+.modal-title{font-size:20px;font-weight:800;margin-bottom:20px;}
+.bmi-result{text-align:center;padding:24px;background:var(--card);border-radius:var(--radius);margin-top:20px;}
+.bmi-value{font-family:'Bebas Neue',sans-serif;font-size:60px;color:var(--accent);}
+.bmi-cat{font-size:18px;font-weight:700;margin-top:4px;}
+.bmi-bar{height:8px;background:var(--bg3);border-radius:99px;margin:16px 0;overflow:hidden;}
+.bmi-fill{height:100%;border-radius:99px;transition:width 0.8s ease;}
+
+/* SETTINGS MODAL */
+.settings-item{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);}
+.settings-item:last-child{border:none;}
+.settings-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.settings-info{flex:1;}
+.settings-name{font-weight:600;font-size:15px;}
+.settings-desc{font-size:12px;color:var(--text2);margin-top:2px;}
+.toggle{width:50px;height:28px;background:var(--bg3);border-radius:99px;position:relative;cursor:pointer;transition:var(--transition);border:none;}
+.toggle.on{background:linear-gradient(135deg,var(--accent),var(--accent2));}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:var(--transition);}
+.toggle.on::after{left:25px;}
+
+/* PROGRESS MODAL */
+.progress-bar-wrap{margin-bottom:16px;}
+.progress-bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+.progress-bar-label span:last-child{color:var(--accent);font-weight:700;}
+.p-bar{height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.p-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease;}
+
+/* NOTIFICATION TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;font-size:14px;font-weight:600;z-index:9999;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;box-shadow:var(--shadow);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast i{color:var(--accent);margin-right:8px;}
+
+/* MUSIC MODE */
+.music-bar{margin:0 20px 20px;background:linear-gradient(135deg,rgba(159,77,255,0.2),rgba(77,159,255,0.2));border:1px solid rgba(159,77,255,0.2);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:var(--transition);}
+.music-bar:active{transform:scale(0.98);}
+.music-icon{font-size:28px;animation:bounce 1.5s infinite;}
+.music-info{flex:1;}
+.music-title{font-weight:700;font-size:14px;}
+.music-sub{font-size:12px;color:var(--text2);}
+.music-controls{display:flex;gap:10px;color:var(--text2);font-size:18px;}
+
+/* SHARE BUTTON */
+.share-btn{margin:0 20px 20px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-weight:700;font-size:14px;color:var(--text);transition:var(--transition);}
+.share-btn:active{transform:scale(0.97);}
+.share-btn i{color:var(--accent);}
+
+/* WELCOME */
+.welcome-text{padding:4px 20px 0;}
+.welcome-greeting{font-size:14px;color:var(--text2);}
+.welcome-name{font-size:22px;font-weight:800;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOADING SCREEN -->
+<div id="loadingScreen">
+  <div class="loader-logo">
+    <div class="logo-icon">💪</div>
+    <div class="logo-text">GYM PRO ELITE</div>
+    <div class="logo-sub">Transform · Perform · Dominate</div>
+  </div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- AUTH PAGE -->
+<div id="authPage" class="page" style="overflow-y:auto;">
+  <div class="auth-bg">
+    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80" alt="Gym" loading="lazy">
+    <div class="auth-logo-overlay">
+      <div class="logo-icon">💪</div>
+      <div class="logo-text">GYM PRO ELITE</div>
+    </div>
+  </div>
+  <div style="padding:24px 20px 0;">
+    <div class="auth-tabs" style="margin:0 0 24px;">
+      <div class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Login</div>
+      <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</div>
+    </div>
+    <div id="loginForm" class="auth-form">
+      <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email address" autocomplete="email"></div>
+      <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="loginPass" placeholder="Password" autocomplete="current-password"></div>
+      <button class="btn-primary" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> LOGIN</button>
+      <div class="auth-divider">or continue with</div>
+      <button class="btn-primary" style="background:var(--bg3);color:var(--text);box-shadow:none;" onclick="demoLogin()"><i class="fas fa-user-circle"></i> Demo Account</button>
+    </div>
+    <div id="signupForm" class="auth-form" style="display:none;">
+      <div class="input-group"><i class="fas fa-user"></i><input type="text" id="signupName" placeholder="Full name" autocomplete="name"></div>
+      <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="Email address" autocomplete="email"></div>
+      <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="signupPass" placeholder="Password (min 6 chars)" autocomplete="new-password"></div>
+      <div class="input-group"><i class="fas fa-weight"></i><input type="number" id="signupWeight" placeholder="Weight (kg)" min="30" max="300"></div>
+      <div class="input-group"><i class="fas fa-ruler-vertical"></i><input type="number" id="signupHeight" placeholder="Height (cm)" min="100" max="250"></div>
+      <button class="btn-primary" onclick="doSignup()"><i class="fas fa-user-plus"></i> CREATE ACCOUNT</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage" class="page">
+  <div class="top-bar">
+    <div class="top-bar-logo">GYM PRO ELITE</div>
+    <div class="top-bar-actions">
+      <div class="icon-btn" onclick="openBMI()"><i class="fas fa-calculator"></i></div>
+      <div class="icon-btn" onclick="toggleDropdown()"><i class="fas fa-ellipsis-v"></i></div>
+    </div>
+  </div>
+  <div id="dropdownMenu" class="dropdown-menu">
+    <div class="menu-item" onclick="goProfile();closeDropdown()"><i class="fas fa-user"></i>Profile</div>
+    <div class="menu-item" onclick="openSettings();closeDropdown()"><i class="fas fa-cog"></i>Settings</div>
+    <div class="menu-item" onclick="openProgress();closeDropdown()"><i class="fas fa-chart-line"></i>Progress</div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" onclick="toggleDarkMode();closeDropdown()"><i class="fas fa-moon"></i>Toggle Theme</div>
+    <div class="menu-item danger" onclick="doLogout();closeDropdown()"><i class="fas fa-sign-out-alt"></i>Logout</div>
+  </div>
+  <div class="page-content">
+    <div class="welcome-text">
+      <div class="welcome-greeting">Good morning,</div>
+      <div class="welcome-name" id="homeUsername">Champion 🔥</div>
+    </div>
+    <!-- Streak -->
+    <div style="padding:14px 20px 0;">
+      <div class="streak-bar">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-info">
+          <div class="streak-num" id="streakNum">7</div>
+          <div class="streak-label">Day Streak</div>
+          <div class="streak-days" id="streakDays"></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;">This Week</div>
+          <div style="font-size:20px;font-weight:800;color:var(--gold);" id="weekWorkouts">5/7</div>
+        </div>
+      </div>
+    </div>
+    <!-- Hero -->
+    <div style="padding:14px 20px 0;">
+      <div class="hero-banner">
+        <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80" alt="Gym" loading="lazy">
+        <div class="hero-overlay">
+          <div class="hero-title">TODAY'S<br>CHALLENGE</div>
+          <div class="hero-sub">Push your limits. Break records.</div>
+        </div>
+        <div class="hero-badge">PRO</div>
+      </div>
+    </div>
+    <!-- Quote -->
+    <div class="quote-card" style="margin-top:14px;">
+      <div class="quote-text" id="quoteText">Pain is temporary. Glory is forever. Your body can stand almost anything — it's your mind you have to convince.</div>
+      <div class="quote-author" id="quoteAuthor">— Arnold Schwarzenegger</div>
+    </div>
+    <!-- Stats -->
+    <div class="section-title" style="margin-top:6px;">Today's <span>Stats</span></div>
+    <div class="stats-grid">
+      <div class="stat-card orange">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value" id="calsBurned">0</div>
+        <div class="stat-label">Calories Burned</div>
+        <div class="stat-change">+0 today</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">👟</div>
+        <div class="stat-value" id="stepCount">0</div>
+        <div class="stat-label">Steps Today</div>
+        <div class="stat-change" id="stepGoal">Goal: 10,000</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value" id="workoutMins">0</div>
+        <div class="stat-label">Active Mins</div>
+        <div class="stat-change">Today</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">❤️</div>
+        <div class="stat-value">78</div>
+        <div class="stat-label">Heart Rate</div>
+        <div class="stat-change">Resting BPM</div>
+      </div>
+    </div>
+    <!-- Water -->
+    <div class="water-tracker">
+      <div class="water-header">
+        <div class="water-title"><i class="fas fa-tint"></i> Water Intake</div>
+        <div class="water-amount" id="waterAmount">0 / 8 glasses</div>
+      </div>
+      <div class="water-bubbles" id="waterBubbles"></div>
+    </div>
+    <!-- Music -->
+    <div class="music-bar" onclick="toggleMusic()">
+      <div class="music-icon" id="musicIcon">🎵</div>
+      <div class="music-info">
+        <div class="music-title" id="musicTitle">Workout Mode — OFF</div>
+        <div class="music-sub" id="musicSub">Tap to start pump music</div>
+      </div>
+      <div class="music-controls">
+        <i class="fas fa-backward" id="musicPrev" style="display:none"></i>
+        <i class="fas fa-play" id="musicPlay"></i>
+        <i class="fas fa-forward" id="musicNext" style="display:none"></i>
+      </div>
+    </div>
+    <!-- Workout Modes -->
+    <div class="section-title">Workout <span>Modes</span></div>
+    <div class="mode-scroll">
+      <div class="mode-card" onclick="showToast('🏠 Home Gym mode selected!')">
+        <img src="https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?w=400&q=80" alt="Home Gym">
+        <div class="mode-overlay">
+          <div class="mode-name">Home Gym</div>
+          <div class="mode-tag">No equipment needed</div>
+          <button class="mode-btn">Start</button>
+        </div>
+      </div>
+      <div class="mode-card" onclick="showToast('🌳 Outdoor Gym mode selected!')">
+        <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400&q=80" alt="Outdoor">
+        <div class="mode-overlay">
+          <div class="mode-name">Outdoor Gym</div>
+          <div class="mode-tag">Fresh air & nature</div>
+          <button class="mode-btn">Start</button>
+        </div>
+      </div>
+      <div class="mode-card" onclick="showToast('🔥 Fat Loss mode selected!')">
+        <img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=400&q=80" alt="Fat Loss">
+        <div class="mode-overlay">
+          <div class="mode-name">Fat Loss</div>
+          <div class="mode-tag">Burn maximum calories</div>
+          <button class="mode-btn">Start</button>
+        </div>
+      </div>
+      <div class="mode-card" onclick="showToast('💪 Muscle Gain mode selected!')">
+        <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=80" alt="Muscle">
+        <div class="mode-overlay">
+          <div class="mode-name">Muscle Gain</div>
+          <div class="mode-tag">Bulk up & get strong</div>
+          <button class="mode-btn">Start</button>
+        </div>
+      </div>
+      <div class="mode-card" onclick="showToast('🏆 Athlete Mode selected!')">
+        <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=80" alt="Athlete">
+        <div class="mode-overlay">
+          <div class="mode-name">Athlete Mode</div>
+          <div class="mode-tag">Peak performance</div>
+          <button class="mode-btn">Start</button>
+        </div>
+      </div>
+      <div class="mode-card" onclick="showToast('🎯 Abs Challenge mode selected!')">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80" alt="Abs">
+        <div class="mode-overlay">
+          <div class="mode-name">Abs Challenge</div>
+          <div class="mode-tag">6-pack in 30 days</div>
+          <button class="mode-btn">Start</button>
+        </div>
+      </div>
+    </div>
+    <!-- Share -->
+    <div class="share-btn" onclick="shareProgress()"><i class="fas fa-share-alt"></i> Share My Progress</div>
+  </div>
+</div>
+
+<!-- WORKOUT PAGE -->
+<div id="workoutPage" class="page">
+  <div class="top-bar">
+    <div class="top-bar-logo">WORKOUT</div>
+    <div class="top-bar-actions">
+      <div class="icon-btn" onclick="openTimer()"><i class="fas fa-stopwatch"></i></div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="workout-hero">
+      <div class="workout-day" id="workoutDayLabel">MONDAY • DAY 1</div>
+      <div class="workout-title">FULL BODY<br>BLAST</div>
+      <div class="workout-meta">
+        <div class="workout-meta-item"><i class="fas fa-clock"></i> 45 min</div>
+        <div class="workout-meta-item"><i class="fas fa-fire"></i> ~380 kcal</div>
+        <div class="workout-meta-item"><i class="fas fa-dumbbell"></i> 6 exercises</div>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startWorkoutSession()"><i class="fas fa-play"></i> START WORKOUT</button>
+    <div class="section-title">Today's <span>Exercises</span></div>
+    <div class="exercise-list" id="exerciseList"></div>
+  </div>
+</div>
+
+<!-- SCAN FOOD PAGE -->
+<div id="scanPage" class="page">
+  <div class="top-bar">
+    <div class="top-bar-logo">AI FOOD SCAN</div>
+    <div class="top-bar-actions">
+      <div class="icon-btn" onclick="showToast('📊 Nutrition history coming soon!')"><i class="fas fa-history"></i></div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="scanner-area">
+      <div class="camera-view" id="cameraView">
+        <video id="cameraVideo" autoplay playsinline></video>
+        <canvas id="cameraCanvas"></canvas>
+        <div class="camera-placeholder" id="cameraPlaceholder">
+          <i class="fas fa-camera"></i>
+          <div>Tap to open camera</div>
+          <div style="font-size:11px;margin-top:4px;color:var(--text3)">AI will detect food & nutrition</div>
+        </div>
+        <div class="scan-overlay" id="scanOverlay" style="display:none;">
+          <div class="scan-frame"></div>
+          <div class="scan-line"></div>
+        </div>
+      </div>
+      <div class="scanner-btns">
+        <button class="scanner-btn primary" onclick="openCamera()"><i class="fas fa-camera"></i> Open Camera</button>
+        <button class="scanner-btn secondary" onclick="captureFood()"><i class="fas fa-crosshairs"></i> Scan</button>
+      </div>
+    </div>
+    <div class="ai-loading" id="aiLoading">
+      <div class="ai-spinner"></div>
+      <div class="ai-text">AI analyzing your food...</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:8px;">Detecting nutrients & calories</div>
+    </div>
+    <div class="food-result" id="foodResult">
+      <div class="food-name" id="foodName">—</div>
+      <div class="food-sub" id="foodPortion">—</div>
+      <div class="nutrition-grid">
+        <div class="nutrition-item"><div class="nutrition-val" id="nCal">—</div><div class="nutrition-key">Calories</div></div>
+        <div class="nutrition-item"><div class="nutrition-val" id="nPro">—</div><div class="nutrition-key">Protein</div></div>
+        <div class="nutrition-item"><div class="nutrition-val" id="nCarb">—</div><div class="nutrition-key">Carbs</div></div>
+        <div class="nutrition-item"><div class="nutrition-val" id="nFat">—</div><div class="nutrition-key">Fat</div></div>
+      </div>
+      <div class="food-tip"><i class="fas fa-leaf"></i><div class="food-tip-text" id="foodTip">—</div></div>
+      <button class="btn-primary" style="margin-top:14px;" onclick="logFood()">Log This Food</button>
+    </div>
+    <div style="padding:0 20px 20px;">
+      <div class="section-title" style="padding:0 0 12px;">Quick <span>Scan</span> Foods</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;" onclick="fakeDetect('Banana')">
+          <div style="font-size:28px;">🍌</div><div style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600;">Banana</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;" onclick="fakeDetect('Chicken Breast')">
+          <div style="font-size:28px;">🍗</div><div style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600;">Chicken</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;" onclick="fakeDetect('Rice Bowl')">
+          <div style="font-size:28px;">🍚</div><div style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600;">Rice Bowl</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;" onclick="fakeDetect('Egg')">
+          <div style="font-size:28px;">🥚</div><div style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600;">Egg</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;" onclick="fakeDetect('Apple')">
+          <div style="font-size:28px;">🍎</div><div style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600;">Apple</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;" onclick="fakeDetect('Protein Shake')">
+          <div style="font-size:28px;">🥤</div><div style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600;">Shake</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div id="profilePage" class="page">
+  <div class="top-bar">
+    <div class="top-bar-logo">PROFILE</div>
+    <div class="top-bar-actions">
+      <div class="icon-btn" onclick="openSettings()"><i class="fas fa-cog"></i></div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="profile-header">
+      <div class="profile-avatar" onclick="showToast('📸 Photo upload coming soon!')">
+        <span id="profileEmoji">💪</span>
+        <div class="edit-badge"><i class="fas fa-pen"></i></div>
+      </div>
+      <div class="profile-name" id="profileName">Champion</div>
+      <div class="profile-since" id="profileSince">Member since today</div>
+      <div class="profile-stats">
+        <div class="profile-stat"><div class="ps-val" id="psTotalSteps">0</div><div class="ps-key">Total Steps</div></div>
+        <div class="profile-stat"><div class="ps-val" id="psTotalCals">0</div><div class="ps-key">Kcal Burned</div></div>
+        <div class="profile-stat"><div class="ps-val" id="psWorkouts">0</div><div class="ps-key">Workouts</div></div>
+      </div>
+    </div>
+    <div style="padding:20px 20px 0;">
+      <div class="section-title" style="padding:0 0 14px;">Badges <span>Earned</span></div>
+    </div>
+    <div class="badges-grid" id="badgesGrid"></div>
+    <!-- BMI Card -->
+    <div style="padding:0 20px 20px;">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;" onclick="openBMI()">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:32px;">⚖️</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:15px;">BMI Calculator</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Check your Body Mass Index</div>
+          </div>
+          <div style="color:var(--accent);font-size:18px;"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="share-btn" onclick="shareProgress()"><i class="fas fa-share-alt"></i> Share My Progress</div>
+    <div style="padding:0 20px 20px;">
+      <button class="btn-primary" style="background:rgba(255,77,77,0.15);color:#FF4D4D;box-shadow:none;border:1px solid rgba(255,77,77,0.2);" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+  <div class="nav-item active" id="nav-home" onclick="goPage('home')">
+    <i class="fas fa-home"></i><span>Home</span>
+  </div>
+  <div class="nav-item" id="nav-workout" onclick="goPage('workout')">
+    <i class="fas fa-dumbbell"></i><span>Workout</span>
+  </div>
+  <div class="nav-item scan-btn" id="nav-scan" onclick="goPage('scan')">
+    <div class="scan-center"><i class="fas fa-qrcode"></i></div>
+    <span>Scan</span>
+  </div>
+  <div class="nav-item" id="nav-profile" onclick="goPage('profile')">
+    <i class="fas fa-user"></i><span>Profile</span>
+  </div>
+</div>
+
+<!-- TIMER MODAL -->
+<div class="timer-modal" id="timerModal">
+  <div class="timer-box">
+    <div style="font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Workout Timer</div>
+    <div class="timer-display" id="timerDisplay">00:00</div>
+    <div style="font-size:13px;color:var(--text2);margin-top:8px;" id="timerStatus">Ready</div>
+    <div class="timer-controls">
+      <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+      <button class="timer-btn stop" onclick="resetTimer()">Reset</button>
+      <button class="timer-btn close-t" onclick="closeTimer()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- BMI MODAL -->
+<div class="modal-overlay" id="bmiModal" onclick="closeBMI(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚖️ BMI Calculator</div>
+    <div style="display:flex;gap:12px;">
+      <div class="input-group" style="flex:1;"><i class="fas fa-weight"></i><input type="number" id="bmiWeight" placeholder="Weight (kg)" min="30" max="300"></div>
+      <div class="input-group" style="flex:1;"><i class="fas fa-ruler-vertical"></i><input type="number" id="bmiHeight" placeholder="Height (cm)" min="100" max="250"></div>
+    </div>
+    <button class="btn-primary" style="margin-top:14px;" onclick="calcBMI()">Calculate BMI</button>
+    <div class="bmi-result" id="bmiResult" style="display:none;">
+      <div class="bmi-value" id="bmiValue">—</div>
+      <div class="bmi-cat" id="bmiCat">—</div>
+      <div class="bmi-bar"><div class="bmi-fill" id="bmiFill"></div></div>
+      <div style="font-size:13px;color:var(--text2);" id="bmiAdvice">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettings(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ Settings</div>
+    <div class="settings-item">
+      <div class="settings-icon" style="background:rgba(255,77,0,0.1);color:var(--accent);"><i class="fas fa-moon"></i></div>
+      <div class="settings-info"><div class="settings-name">Dark Mode</div><div class="settings-desc">Toggle between dark & light</div></div>
+      <button class="toggle" id="darkModeToggle" onclick="toggleDarkMode()"></button>
+    </div>
+    <div class="settings-item">
+      <div class="settings-icon" style="background:rgba(77,159,255,0.1);color:#4D9FFF;"><i class="fas fa-bell"></i></div>
+      <div class="settings-info"><div class="settings-name">Notifications</div><div class="settings-desc">Workout & water reminders</div></div>
+      <button class="toggle" id="notifToggle" onclick="toggleNotifications()"></button>
+    </div>
+    <div class="settings-item">
+      <div class="settings-icon" style="background:rgba(77,255,159,0.1);color:#4DFF9F;"><i class="fas fa-music"></i></div>
+      <div class="settings-info"><div class="settings-name">Workout Music</div><div class="settings-desc">Enable music mode</div></div>
+      <button class="toggle" id="musicToggle" onclick="toggleMusicSetting()"></button>
+    </div>
+    <div class="settings-item">
+      <div class="settings-icon" style="background:rgba(255,215,0,0.1);color:var(--gold);"><i class="fas fa-trophy"></i></div>
+      <div class="settings-info"><div class="settings-name">Daily Goal</div><div class="settings-desc">10,000 steps per day</div></div>
+      <div style="color:var(--accent);font-weight:700;font-size:14px;">10K</div>
+    </div>
+    <div class="settings-item">
+      <div class="settings-icon" style="background:rgba(255,77,77,0.1);color:#FF4D4D;"><i class="fas fa-trash"></i></div>
+      <div class="settings-info"><div class="settings-name">Reset Progress</div><div class="settings-desc">Clear today's data</div></div>
+      <button style="background:rgba(255,77,77,0.15);color:#FF4D4D;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;font-family:'Outfit',sans-serif;" onclick="resetTodayProgress()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS MODAL -->
+<div class="modal-overlay" id="progressModal" onclick="closeProgress(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📊 My Progress</div>
+    <div id="progressContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done!</span></div>
+
+<script>
+// ====== STATE ======
+const QUOTES=[{t:"Pain is temporary. Glory is forever. Your body can stand almost anything — it's your mind you have to convince.",a:"Arnold Schwarzenegger"},{t:"The only bad workout is the one that didn't happen.",a:"Unknown"},{t:"Success usually comes to those who are too busy to be looking for it.",a:"Henry David Thoreau"},{t:"Take care of your body. It's the only place you have to live.",a:"Jim Rohn"},{t:"Strength does not come from the body. It comes from the will of the soul.",a:"Gandhi"},{t:"The difference between try and triumph is a little 'umph'.",a:"Marvin Phillips"}];
+
+const FOODS={
+  'Banana':{name:'Banana',portion:'1 medium (118g)',cal:105,pro:'1.3g',carb:'27g',fat:'0.4g',tip:'Great pre-workout energy boost! High in potassium which helps prevent muscle cramps. Eat 30 mins before training.'},
+  'Chicken Breast':{name:'Chicken Breast',portion:'100g cooked',cal:165,pro:'31g',carb:'0g',fat:'3.6g',tip:'Excellent lean protein source! Perfect for muscle repair and growth. Best grilled or baked. Avoid frying.'},
+  'Rice Bowl':{name:'Rice Bowl',portion:'1 cup cooked (186g)',cal:242,pro:'4.4g',carb:'53g',fat:'0.4g',tip:'Complex carbs for sustained energy. Best consumed 2 hours before workout or right after for glycogen replenishment.'},
+  'Egg':{name:'Whole Egg',portion:'1 large egg (50g)',cal:78,pro:'6g',carb:'0.6g',fat:'5g',tip:'Complete protein with all essential amino acids! Yolk contains healthy fats & vitamins. Great post-workout breakfast.'},
+  'Apple':{name:'Apple',portion:'1 medium (182g)',cal:95,pro:'0.5g',carb:'25g',fat:'0.3g',tip:'Rich in antioxidants and fiber. A great healthy snack between meals. The pectin fiber helps keep you feeling full longer.'},
+  'Protein Shake':{name:'Protein Shake',portion:'1 serving (300ml)',cal:150,pro:'25g',carb:'8g',fat:'3g',tip:'Perfect post-workout recovery! Drink within 30 minutes after training for best muscle protein synthesis results.'}
+};
+
+const EXERCISES=[
+  {name:'Push-Ups',sets:'4 × 15 reps',icon:'💪',bg:'rgba(255,77,0,0.1)',color:'var(--accent)',done:false},
+  {name:'Squats',sets:'4 × 20 reps',icon:'🦵',bg:'rgba(77,159,255,0.1)',color:'#4D9FFF',done:false},
+  {name:'Pull-Ups',sets:'3 × 8 reps',icon:'🏋️',bg:'rgba(77,255,159,0.1)',color:'#4DFF9F',done:false},
+  {name:'Running',sets:'20 minutes',icon:'🏃',bg:'rgba(255,215,0,0.1)',color:'var(--gold)',done:false},
+  {name:'Plank',sets:'3 × 60 sec',icon:'🧘',bg:'rgba(159,77,255,0.1)',color:'#9F4DFF',done:false},
+  {name:'Burpees',sets:'3 × 12 reps',icon:'⚡',bg:'rgba(255,140,0,0.1)',color:'var(--accent2)',done:false}
+];
+
+const BADGES=[
+  {emoji:'🔥',name:'7-Day Streak',earned:true},{emoji:'💪',name:'First Workout',earned:true},
+  {emoji:'🏃',name:'10K Steps',earned:true},{emoji:'💧',name:'Hydration Hero',earned:true},
+  {emoji:'🏆',name:'Champion',earned:false},{emoji:'⚡',name:'Speed Demon',earned:false},
+  {emoji:'🎯',name:'Goal Crusher',earned:false},{emoji:'🌟',name:'Elite',earned:false}
+];
+
+let state={water:0,steps:0,cals:0,mins:0,streak:7,darkMode:true,musicOn:false,notifOn:false,workouts:0};
+let timerInterval=null,timerSec=0,timerRunning=false;
+let stepInterval=null;
+let cameraStream=null;
+let currentPage='home';
+
+// ====== INIT ======
+window.onload=()=>{
+  loadState();
+  setTimeout(()=>{
+    document.getElementById('loadingScreen').style.opacity='0';
+    document.getElementById('loadingScreen').style.transition='opacity 0.5s ease';
+    setTimeout(()=>{
+      document.getElementById('loadingScreen').style.display='none';
+      checkAuth();
+    },500);
+  },2500);
+};
+
+function loadState(){
+  const s=localStorage.getItem('gym_state');
+  if(s) state={...state,...JSON.parse(s)};
+  applyTheme();
+}
+
+function saveState(){
+  localStorage.setItem('gym_state',JSON.stringify(state));
+}
+
+function checkAuth(){
+  const user=localStorage.getItem('gym_user');
+  if(user){
+    const u=JSON.parse(user);
+    initApp(u);
+  } else {
+    showPage('auth');
+  }
+}
+
+function initApp(u){
+  updateHomeUI(u);
+  updateProfileUI(u);
+  buildWater();
+  buildExercises();
+  buildBadges();
+  buildStreak();
+  setQuote();
+  startStepCounter();
+  loadDarkModeToggle();
+  updateWorkoutDay();
+  showPage('home');
+  scheduleNotifications();
+}
+
+// ====== AUTH ======
+function switchAuthTab(t){
+  document.getElementById('loginTab').classList.toggle('active',t==='login');
+  document.getElementById('signupTab').classList.toggle('active',t==='signup');
+  document.getElementById('loginForm').style.display=t==='login'?'flex':'none';
+  document.getElementById('signupForm').style.display=t==='signup'?'flex':'none';
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showToast('⚠️ Fill in all fields');return;}
+  const u=localStorage.getItem('gym_user');
+  if(u){
+    const user=JSON.parse(u);
+    if(user.email===email&&user.pass===pass){
+      showToast('✅ Welcome back!');
+      initApp(user);
+      return;
+    }
+  }
+  showToast('❌ Invalid credentials');
+}
+
+function doSignup(){
+  const name=document.getElementById('signupName').value.trim();
+  const email=document.getElementById('signupEmail').value.trim();
+  const pass=document.getElementById('signupPass').value;
+  const weight=document.getElementById('signupWeight').value;
+  const height=document.getElementById('signupHeight').value;
+  if(!name||!email||!pass){showToast('⚠️ Fill in all fields');return;}
+  if(pass.length<6){showToast('⚠️ Password too short');return;}
+  const user={name,email,pass,weight,height,joined:new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'})};
+  localStorage.setItem('gym_user',JSON.stringify(user));
+  showToast('🎉 Account created!');
+  initApp(user);
+}
+
+function demoLogin(){
+  const user={name:'Champion',email:'demo@gym.pro',pass:'demo123',weight:75,height:175,joined:new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'})};
+  localStorage.setItem('gym_user',JSON.stringify(user));
+  showToast('👋 Welcome, Champion!');
+  state.steps=4823;state.cals=320;state.mins=35;state.water=5;state.workouts=14;
+  saveState();
+  initApp(user);
+}
+
+function doLogout(){
+  stopCamera();
+  showPage('auth');
+  showToast('👋 See you next time!');
+  clearInterval(stepInterval);
+}
+
+// ====== PAGES ======
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const map={auth:'authPage',home:'homePage',workout:'workoutPage',scan:'scanPage',profile:'profilePage'};
+  const el=document.getElementById(map[page]);
+  if(el) el.classList.add('active');
+  document.getElementById('bottomNav').style.display=page==='auth'?'none':'flex';
+  currentPage=page;
+  updateNavActive(page);
+  if(page==='scan') resetScanner();
+}
+
+function goPage(page){
+  showPage(page);
+  if(page==='profile') refreshProfile();
+}
+
+function goProfile(){goPage('profile');}
+
+function updateNavActive(page){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const map={home:'nav-home',workout:'nav-workout',scan:'nav-scan',profile:'nav-profile'};
+  const el=document.getElementById(map[page]);
+  if(el) el.classList.add('active');
+}
+
+// ====== UI UPDATES ======
+function updateHomeUI(u){
+  document.getElementById('homeUsername').textContent=(u.name||'Champion')+' 🔥';
+  document.getElementById('calsBurned').textContent=state.cals;
+  document.getElementById('stepCount').textContent=state.steps.toLocaleString();
+  document.getElementById('workoutMins').textContent=state.mins;
+}
+
+function updateProfileUI(u){
+  document.getElementById('profileName').textContent=u.name||'Champion';
+  document.getElementById('profileSince').textContent='Member since '+(u.joined||'today');
+  document.getElementById('psTotalSteps').textContent=(state.steps*14).toLocaleString();
+  document.getElementById('psTotalCals').textContent=(state.cals*14).toLocaleString();
+  document.getElementById('psWorkouts').textContent=state.workouts||14;
+}
+
+function refreshProfile(){
+  const u=JSON.parse(localStorage.getItem('gym_user')||'{}');
+  updateProfileUI(u);
+}
+
+function buildWater(){
+  const container=document.getElementById('waterBubbles');
+  container.innerHTML='';
+  for(let i=0;i<8;i++){
+    const b=document.createElement('div');
+    b.className='water-bubble'+(i<state.water?' filled':'');
+    b.innerHTML='💧';
+    b.onclick=()=>toggleWater(i);
+    container.appendChild(b);
+  }
+  document.getElementById('waterAmount').textContent=`${state.water} / 8 glasses`;
+}
+
+function toggleWater(i){
+  state.water=i<state.water?i:i+1;
+  saveState();
+  buildWater();
+  if(state.water>=8) showToast('🎉 Daily hydration goal reached!');
+}
+
+function buildExercises(){
+  const list=document.getElementById('exerciseList');
+  list.innerHTML='';
+  EXERCISES.forEach((ex,i)=>{
+    const card=document.createElement('div');
+    card.className='exercise-card';
+    card.id='ex-'+i;
+    card.innerHTML=`
+      <div class="ex-icon" style="background:${ex.bg};">${ex.icon}</div>
+      <div class="ex-info">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-meta">${ex.sets}</div>
+      </div>
+      <div class="ex-check ${ex.done?'done':''}" onclick="toggleEx(${i})" id="check-${i}">
+        ${ex.done?'<i class="fas fa-check"></i>':''}
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function toggleEx(i){
+  EXERCISES[i].done=!EXERCISES[i].done;
+  const check=document.getElementById('check-'+i);
+  check.classList.toggle('done',EXERCISES[i].done);
+  check.innerHTML=EXERCISES[i].done?'<i class="fas fa-check"></i>':'';
+  if(EXERCISES[i].done){
+    state.cals+=Math.floor(Math.random()*40)+30;
+    state.mins+=Math.floor(Math.random()*8)+5;
+    saveState();
+    document.getElementById('calsBurned').textContent=state.cals;
+    document.getElementById('workoutMins').textContent=state.mins;
+    showToast('✅ '+EXERCISES[i].name+' completed! +cals');
+  }
+  const done=EXERCISES.filter(e=>e.done).length;
+  if(done===EXERCISES.length) showToast('🏆 Workout complete! Amazing job!');
+}
+
+function buildBadges(){
+  const grid=document.getElementById('badgesGrid');
+  grid.innerHTML='';
+  BADGES.forEach(b=>{
+    const item=document.createElement('div');
+    item.className='badge-item'+(b.earned?' earned':'');
+    item.style.opacity=b.earned?'1':'0.4';
+    item.innerHTML=`<div class="badge-emoji">${b.emoji}</div><div class="badge-name">${b.name}</div>`;
+    item.onclick=()=>showToast(b.earned?`🏅 ${b.name} earned!`:`🔒 ${b.name} — keep going!`);
+    grid.appendChild(item);
+  });
+}
+
+function buildStreak(){
+  const container=document.getElementById('streakDays');
+  container.innerHTML='';
+  for(let i=0;i<7;i++){
+    const d=document.createElement('div');
+    d.className='streak-day'+(i<state.streak?' done':'');
+    container.appendChild(d);
+  }
+  document.getElementById('streakNum').textContent=state.streak;
+}
+
+function setQuote(){
+  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  document.getElementById('quoteText').textContent=q.t;
+  document.getElementById('quoteAuthor').textContent='— '+q.a;
+}
+
+function updateWorkoutDay(){
+  const days=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+  const d=new Date();
+  document.getElementById('workoutDayLabel').textContent=days[d.getDay()]+' • DAY '+d.getDate();
+}
+
+// ====== STEP COUNTER ======
+function startStepCounter(){
+  if(window.DeviceMotionEvent){
+    let lastAcc=0;
+    window.addEventListener('devicemotion',(e)=>{
+      const acc=e.accelerationIncludingGravity;
+      if(!acc) return;
+      const total=Math.sqrt(acc.x**2+acc.y**2+acc.z**2);
+      if(Math.abs(total-lastAcc)>8){
+        state.steps+=1;
+        saveState();
+        document.getElementById('stepCount').textContent=state.steps.toLocaleString();
+      }
+      lastAcc=total;
+    });
+  }
+  // Simulate steps
+  stepInterval=setInterval(()=>{
+    state.steps+=Math.floor(Math.random()*3);
+    saveState();
+    document.getElementById('stepCount').textContent=state.steps.toLocaleString();
+  },5000);
+}
+
+// ====== TIMER ======
+function openTimer(){
+  document.getElementById('timerModal').classList.add('open');
+}
+function closeTimer(){
+  document.getElementById('timerModal').classList.remove('open');
+}
+function toggleTimer(){
+  if(timerRunning){
+    clearInterval(timerInterval);
+    timerRunning=false;
+    document.getElementById('timerStartBtn').textContent='Resume';
+    document.getElementById('timerStatus').textContent='Paused';
+  } else {
+    timerRunning=true;
+    document.getElementById('timerStartBtn').textContent='Pause';
+    document.getElementById('timerStatus').textContent='Running...';
+    timerInterval=setInterval(()=>{
+      timerSec++;
+      const m=String(Math.floor(timerSec/60)).padStart(2,'0');
+      const s=String(timerSec%60).padStart(2,'0');
+      document.getElementById('timerDisplay').textContent=`${m}:${s}`;
+    },1000);
+  }
+}
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerRunning=false;
+  timerSec=0;
+  document.getElementById('timerDisplay').textContent='00:00';
+  document.getElementById('timerStartBtn').textContent='Start';
+  document.getElementById('timerStatus').textContent='Ready';
+}
+
+// ====== WORKOUT ======
+function startWorkoutSession(){
+  state.workouts=(state.workouts||0)+1;
+  state.streak=Math.min(state.streak+1,30);
+  saveState();
+  EXERCISES.forEach(e=>e.done=false);
+  buildExercises();
+  buildStreak();
+  showToast('💪 Workout started! Let\'s go!');
+  openTimer();
+}
+
+// ====== FOOD SCANNER ======
+async function openCamera(){
+  try{
+    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    const video=document.getElementById('cameraVideo');
+    video.srcObject=cameraStream;
+    video.style.display='block';
+    document.getElementById('cameraPlaceholder').style.display='none';
+    document.getElementById('scanOverlay').style.display='block';
+    showToast('📷 Camera ready — point at food!');
+  } catch(e){
+    showToast('📷 Camera not available — use quick scan below');
+  }
+}
+
+function stopCamera(){
+  if(cameraStream){
+    cameraStream.getTracks().forEach(t=>t.stop());
+    cameraStream=null;
+  }
+  const video=document.getElementById('cameraVideo');
+  video.style.display='none';
+  document.getElementById('cameraPlaceholder').style.display='block';
+  document.getElementById('scanOverlay').style.display='none';
+}
+
+function captureFood(){
+  if(!cameraStream){
+    showToast('📷 Open camera first!');
+    return;
+  }
+  const foods=Object.keys(FOODS);
+  const detected=foods[Math.floor(Math.random()*foods.length)];
+  fakeDetect(detected);
+}
+
+function fakeDetect(foodKey){
+  document.getElementById('foodResult').classList.remove('show');
+  document.getElementById('foodResult').style.display='none';
+  document.getElementById('aiLoading').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('aiLoading').classList.remove('show');
+    document.getElementById('aiLoading').style.display='none';
+    showFoodResult(FOODS[foodKey]||FOODS['Banana']);
+  },2000);
+}
+
+function showFoodResult(food){
+  document.getElementById('foodName').textContent=food.name;
+  document.getElementById('foodPortion').textContent=food.portion;
+  document.getElementById('nCal').textContent=food.cal;
+  document.getElementById('nPro').textContent=food.pro;
+  document.getElementById('nCarb').textContent=food.carb;
+  document.getElementById('nFat').textContent=food.fat;
+  document.getElementById('foodTip').textContent=food.tip;
+  const result=document.getElementById('foodResult');
+  result.style.display='block';
+  result.classList.add('show');
+  showToast('🤖 '+food.name+' detected!');
+}
+
+function logFood(){
+  const cal=parseInt(document.getElementById('nCal').textContent)||0;
+  showToast('✅ Food logged! +'+cal+' kcal tracked');
+  document.getElementById('foodResult').classList.remove('show');
+  setTimeout(()=>{document.getElementById('foodResult').style.display='none';},300);
+}
+
+function resetScanner(){
+  document.getElementById('foodResult').classList.remove('show');
+  document.getElementById('foodResult').style.display='none';
+  document.getElementById('aiLoading').classList.remove('show');
+}
+
+// ====== BMI ======
+function openBMI(){
+  const u=JSON.parse(localStorage.getItem('gym_user')||'{}');
+  if(u.weight) document.getElementById('bmiWeight').value=u.weight;
+  if(u.height) document.getElementById('bmiHeight').value=u.height;
+  document.getElementById('bmiModal').classList.add('open');
+}
+function closeBMI(e){
+  if(e.target===document.getElementById('bmiModal')) document.getElementById('bmiModal').classList.remove('open');
+}
+function calcBMI(){
+  const w=parseFloat(document.getElementById('bmiWeight').value);
+  const h=parseFloat(document.getElementById('bmiHeight').value)/100;
+  if(!w||!h){showToast('⚠️ Enter weight and height');return;}
+  const bmi=(w/(h*h)).toFixed(1);
+  let cat,color,pct,advice;
+  if(bmi<18.5){cat='Underweight';color='#4D9FFF';pct=25;advice='Focus on strength training and caloric surplus. Eat more protein-rich foods.';}
+  else if(bmi<25){cat='Normal Weight ✓';color='#4DFF9F';pct=50;advice='Great! Maintain your current lifestyle with regular exercise and balanced diet.';}
+  else if(bmi<30){cat='Overweight';color='var(--gold)';pct=70;advice='Focus on cardio and caloric deficit. 30-45 mins of cardio 5x per week recommended.';}
+  else{cat='Obese';color='var(--accent)';pct=90;advice='Consult a doctor. Start with low-impact cardio and gradually increase intensity.';}
+  document.getElementById('bmiValue').textContent=bmi;
+  document.getElementById('bmiCat').textContent=cat;
+  document.getElementById('bmiAdvice').textContent=advice;
+  document.getElementById('bmiFill').style.width=pct+'%';
+  document.getElementById('bmiFill').style.background=color;
+  document.getElementById('bmiResult').style.display='block';
+}
+
+// ====== SETTINGS ======
+function openSettings(){
+  document.getElementById('settingsModal').classList.add('open');
+  loadDarkModeToggle();
+}
+function closeSettings(e){
+  if(e.target===document.getElementById('settingsModal')) document.getElementById('settingsModal').classList.remove('open');
+}
+function loadDarkModeToggle(){
+  const t=document.getElementById('darkModeToggle');
+  if(t) t.classList.toggle('on',state.darkMode);
+}
+
+// ====== PROGRESS ======
+function openProgress(){
+  const content=document.getElementById('progressContent');
+  const goals=[{label:'Daily Steps',val:state.steps,max:10000},{label:'Calories Burned',val:state.cals,max:500},{label:'Active Minutes',val:state.mins,max:60},{label:'Water Intake (glasses)',val:state.water,max:8}];
+  content.innerHTML=goals.map(g=>`
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-label"><span>${g.label}</span><span>${g.val} / ${g.max}</span></div>
+      <div class="p-bar"><div class="p-fill" style="width:${Math.min(100,(g.val/g.max)*100)}%"></div></div>
+    </div>`).join('');
+  document.getElementById('progressModal').classList.add('open');
+}
+function closeProgress(e){
+  if(e.target===document.getElementById('progressModal')) document.getElementById('progressModal').classList.remove('open');
+}
+
+// ====== DARK MODE ======
+function toggleDarkMode(){
+  state.darkMode=!state.darkMode;
+  applyTheme();
+  saveState();
+  loadDarkModeToggle();
+  showToast(state.darkMode?'🌙 Dark mode on':'☀️ Light mode on');
+}
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',state.darkMode?'dark':'light');
+}
+
+// ====== MUSIC ======
+const TRACKS=['Eye of the Tiger','Till I Collapse','Stronger','Lose Yourself','Can\'t Hold Us'];
+let currentTrack=0;
+function toggleMusic(){
+  state.musicOn=!state.musicOn;
+  saveState();
+  if(state.musicOn){
+    document.getElementById('musicTitle').textContent='🎵 '+TRACKS[currentTrack];
+    document.getElementById('musicSub').textContent='Workout Mode — Playing';
+    document.getElementById('musicPlay').className='fas fa-pause';
+    document.getElementById('musicPrev').style.display='block';
+    document.getElementById('musicNext').style.display='block';
+    document.getElementById('musicIcon').style.animation='bounce 0.5s infinite';
+    showToast('🎵 Workout music ON!');
+  } else {
+    document.getElementById('musicTitle').textContent='Workout Mode — OFF';
+    document.getElementById('musicSub').textContent='Tap to start pump music';
+    document.getElementById('musicPlay').className='fas fa-play';
+    document.getElementById('musicPrev').style.display='none';
+    document.getElementById('musicNext').style.display='none';
+  }
+}
+function toggleMusicSetting(){
+  toggleMusic();
+  const t=document.getElementById('musicToggle');
+  t.classList.toggle('on');
+}
+
+// ====== NOTIFICATIONS ======
+function toggleNotifications(){
+  const t=document.getElementById('notifToggle');
+  if(!state.notifOn){
+    if('Notification' in window){
+      Notification.requestPermission().then(p=>{
+        if(p==='granted'){
+          state.notifOn=true;
+          t.classList.add('on');
+          saveState();
+          showToast('🔔 Notifications enabled!');
+          scheduleNotifications();
+        } else {
+          showToast('❌ Notification permission denied');
+        }
+      });
+    }
+  } else {
+    state.notifOn=false;
+    t.classList.remove('on');
+    saveState();
+    showToast('🔕 Notifications disabled');
+  }
+}
+
+function scheduleNotifications(){
+  if(!state.notifOn||!('Notification' in window)) return;
+  if(Notification.permission!=='granted') return;
+  setTimeout(()=>{
+    try{new Notification('💪 GYM PRO ELITE',{body:'Time for your workout! Let\'s crush it!',icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💪</text></svg>'});}catch(e){}
+  },30000);
+  setTimeout(()=>{
+    try{new Notification('💧 GYM PRO ELITE',{body:'Stay hydrated! Drink a glass of water now.',icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💧</text></svg>'});}catch(e){}
+  },60000);
+}
+
+// ====== SHARE ======
+function shareProgress(){
+  const u=JSON.parse(localStorage.getItem('gym_user')||'{}');
+  const text=`💪 My GYM PRO ELITE Stats!\n\n🔥 Streak: ${state.streak} days\n👟 Steps: ${state.steps.toLocaleString()}\n🔥 Calories: ${state.cals}\n💧 Water: ${state.water}/8 glasses\n\nJoin me on GYM PRO ELITE!`;
+  if(navigator.share){
+    navigator.share({title:'GYM PRO ELITE Progress',text:text}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>showToast('📋 Progress copied to clipboard!'));
+  }
+}
+
+// ====== DROPDOWN ======
+function toggleDropdown(){
+  document.getElementById('dropdownMenu').classList.toggle('open');
+}
+function closeDropdown(){
+  document.getElementById('dropdownMenu').classList.remove('open');
+}
+document.addEventListener('click',(e)=>{
+  const menu=document.getElementById('dropdownMenu');
+  if(!e.target.closest('#dropdownMenu')&&!e.target.closest('.icon-btn')) menu.classList.remove('open');
+});
+
+// ====== TOAST ======
+let toastTimeout;
+function showToast(msg){
+  clearTimeout(toastTimeout);
+  const toast=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  toast.classList.add('show');
+  toastTimeout=setTimeout(()=>toast.classList.remove('show'),3000);
+}
+
+// ====== RESET ======
+function resetTodayProgress(){
+  state.steps=0;state.cals=0;state.mins=0;state.water=0;
+  saveState();
+  document.getElementById('stepCount').textContent='0';
+  document.getElementById('calsBurned').textContent='0';
+  document.getElementById('workoutMins').textContent='0';
+  buildWater();
+  EXERCISES.forEach(e=>e.done=false);
+  buildExercises();
+  document.getElementById('settingsModal').classList.remove('open');
+  showToast('🔄 Today\'s progress reset!');
+}
+</script>
+</body>
+</html>
